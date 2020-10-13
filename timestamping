@@ -1,0 +1,18 @@
+%% Timestamping code
+% read in photon arrival times from d1 and d2
+% find difference in arrival times for each photon event
+% plot histogram of difference in arrival times
+
+clear all;
+
+tic
+chunk_size=1e5;
+d1=[];
+d2=[];
+fid1 = fopen('Results_TimestampsE5_3_4mW_MaxPol_C2.bin','r');
+fid2=fopen('Results_TimestampsE5_3_4mW_MaxPol_C3.bin','r');
+% A = fread(FID,SIZE,PRECISION,SKIP) includes a SKIP argument that specifies the
+    
+%number of bytes to skip after each PRECISION value is read.
+d1=fread(fid1,chunk_size,'uint64',0)/1000;
+d2=fread(fid2,chunk_size,'uint64',0)/1000;
