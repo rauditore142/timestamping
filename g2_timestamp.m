@@ -17,7 +17,15 @@ bins_edge=round(histedge/binedge);
 edges=linspace(-histedge,histedge,bins_edge);
 N=zeros(1,length(edges)-1);
 
-
+%set up plots
+s1=subplot(1,2,1);
+h1=plot(histrange(1:length(co)),co,'.-');
+xlabel('Time in ps');
+ylabel('Counts');
+s2=subplot(1,2,2);
+h2=plot(edges(1:length(N)),N,'.-');
+xlabel('Time in ps');
+ylabel('Counts');
 %get file parameters such as count rate, number of events
 %% read in files
 fileName1='Results_TimestampsE5_3_4mW_MaxPol_C2.bin';
@@ -118,8 +126,16 @@ for i1=1:chunk_factor
     %update plot
     i3=mod(i1,round(chunk_plot/chunk_factor));
     if i3==0%only update plot every time chunk_plot_size has been processed- faster
-        run('histplot.m');
-        
+       x1=histrange(1:length(co));
+        h1.XDataSource = 'x1';
+        h1.YDataSource = 'co';
+        refreshdata;
+        %update plot 2
+        x2=edges(1:length(N));
+        h2.XDataSource = 'x2';
+        h2.YDataSource= 'N';
+        refreshdata;
+        shg;
     end
     
     grad2 = ftell(fid2)/max(d_array2);%gradient of fid2_file_pos at end of this chunk/channel2(time)
