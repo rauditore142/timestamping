@@ -7,7 +7,7 @@ tic
 
 %hist settings
 %change these as required- bin size, offset, searching time
-t_max=1e8; %time in ps=1ms for searching function
+t_max=5e5; %time in ps=1ms for searching function
 d_bin=100;
 bin_size=50*d_bin; %in ps
 %t_offset=2.5e6 - bin_size; bunched
@@ -30,7 +30,7 @@ h=surf(histrange(1:length(N3)),histrange(1:length(N3)),N3);
 %enter file name here
 fileName1='0518_0.9V_100k_10min_C1.bin';
 fileName2='0518_0.9V_100k_10min_C2.bin';
-fileName3='0518_0.9V_100k_10min_C3.bin';
+fileName3='0518_0.9V_100k_10min_C4.bin';
 %channel 1
 fid1 = fopen(fileName1,'r+');
 fseek(fid1,-8,'eof');%go to end of file
@@ -90,7 +90,9 @@ for i1=1:chunk_factor
     %initialise arrays
     dt12_array=NaN(ind,2000); %preallocate dt for speed
     dt13_array=NaN(ind,2000);
-    dt123_array=NaN(ind,2000);
+    dt_pair=NaN(ind*100,2);
+    %dt123_array=NaN(ind,2000);
+    i123=0;
     for i2=1:ind
         here=indices(i2); %find index value of this iteration
         now=d_array1(here); %find time value of this index
@@ -112,9 +114,13 @@ for i1=1:chunk_factor
         row13=dt13_array(i2,:);
         i4=length(row13);
         row123=i3*i4;
+        
         for i12=1:i3
             for i13=1:i4
-            dt123_array(i2,i12*i13)=dt12_array(i2,i12)-dt13_array(i2,i13);
+                i123=i123+1;
+                dt_pair(i123,1)=dt12_array(i2,i12);
+                dt_pair(i123,2)=dt13_array(i2,i13);
+            %dt123_array(i2,i12*i13)=dt12_array(i2,i12)-dt13_array(i2,i13);
             end
         end
     end
@@ -125,7 +131,7 @@ for i1=1:chunk_factor
     [n2,histrange]=histcounts(dt13_array,histrange);
     N2=N2+n2;
     
-    [n3,histrange,histrange]=histcounts2(dt123_array(:,)dt12_array,dt13_array);
+    [n3,histrange,histrange]=histcounts2(dt_pair(:,1),dt_pair(:,2));
     for i3=1:length(histrange)-1 %column iterator
         for i4=1:length(histrange)-1 %row iterator
             N3(i4,i3)=N3(i4,i3)+n3(i4,i3);
