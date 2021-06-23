@@ -7,7 +7,7 @@ tic
 
 %hist settings
 %change these as required- bin size, offset, searching time
-t_max=5e5; %time in ps=1ms for searching function
+t_max=1e6; %time in ps=1ms for searching function
 d_bin=100;
 bin_size=50*d_bin; %in ps
 %t_offset=2.5e6 - bin_size; bunched
@@ -88,8 +88,8 @@ for i1=1:chunk_factor
     indices=find(d_array1>st & d_array1<fin);
     ind=length(indices);
     %initialise arrays
-    dt12_array=NaN(ind,2000); %preallocate dt for speed
-    dt13_array=NaN(ind,2000);
+    dt12_array=NaN(ind,200); %preallocate dt for speed
+    dt13_array=NaN(ind,200);
     dt_pair=NaN(ind*100,2);
     %dt123_array=NaN(ind,2000);
     i123=0;
@@ -109,10 +109,13 @@ for i1=1:chunk_factor
             dt13=d_array3(match3) - now;
             dt13_array(i2,1:length(dt13))=dt13;
         end
+        
         row12=dt12_array(i2,:);
-        i3=length(row12);
+        row12_t=row12(~isnan(row12));
+        i3=length(row12_t);
         row13=dt13_array(i2,:);
-        i4=length(row13);
+        row13_t=row13(~isnan(row13));
+        i4=length(row13_t);
         row123=i3*i4;
         
         for i12=1:i3
