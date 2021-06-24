@@ -22,7 +22,7 @@ N3=zeros(length(histrange)-1,length(histrange)-1);
 %full range plot
 % will have to use surf or contour?
 %pick a reference channel - eg C1 - and plot dx=dt(C1-C2), dy=dt(C1-C3)
-h=surf(histrange(1:length(N3)),histrange(1:length(N3)),N3);
+h=contourf(histrange(1:length(N3)),histrange(1:length(N3)),N3);
 
 
 %% read in files
@@ -129,12 +129,12 @@ for i1=1:chunk_factor
     end
     
     %count data
-    [n1, histrange]= histcounts(dt12_array,histrange);%create histogram of pairs file- this command is a bottleneck on program speed, non linear with 'edges' size
+    [n1, histrange_new]= histcounts(dt12_array,histrange);%create histogram of pairs file- this command is a bottleneck on program speed, non linear with 'edges' size
     N1= N1+n1;
-    [n2,histrange]=histcounts(dt13_array,histrange);
+    [n2,histrange_new]=histcounts(dt13_array,histrange);
     N2=N2+n2;
     
-    [n3,histrange,histrange]=histcounts2(dt_pair(:,1),dt_pair(:,2));
+    [n3,histrange_new,histrange_new]=histcounts2(dt_pair(:,1),dt_pair(:,2),histrange,histrange);
     for i3=1:length(histrange)-1 %column iterator
         for i4=1:length(histrange)-1 %row iterator
             N3(i4,i3)=N3(i4,i3)+n3(i4,i3);
@@ -144,7 +144,7 @@ for i1=1:chunk_factor
     %% update plot
     i3=mod(i1,round(chunk_plot/chunk_factor));
     if i3==0%only update plot every time chunk_plot_size has been processed- faster
-        h.ZDataSource = 'n3';
+        h.ZDataSource = 'N3';
         refreshdata;
         shg;
     end
